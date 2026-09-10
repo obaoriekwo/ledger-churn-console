@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Credit Card Attrition Risk Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <div class="brand-text">
+        <h1>Ledger</h1>
+        <p>Credit card attrition risk console</p>
+      </div>
+    </div>
+    <div class="masthead-stat" id="masthead-churn">
+      <span class="masthead-stat-value">—</span>
+      <span class="masthead-stat-label">portfolio churn rate</span>
+    </div>
+  </div>
+</header>
+
+<nav class="ledger-tabs" id="tabs">
+  <button class="tab active" data-tab="overview">Overview</button>
+  <button class="tab" data-tab="models">Model comparison</button>
+  <button class="tab" data-tab="demographics">Demographics</button>
+  <button class="tab" data-tab="behavior">Transaction behavior</button>
+  <button class="tab" data-tab="segments">Churn by segment</button>
+  <button class="tab" data-tab="assess">Assess a customer</button>
+</nav>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section class="panel active" id="panel-overview">
+    <h2 class="panel-title">Book summary</h2>
+    <div class="ledger-row header-row">
+      <span>Line</span><span>Value</span>
+    </div>
+    <div class="ledger-grid" id="overview-grid"></div>
+  </section>
+
+  <!-- MODELS -->
+  <section class="panel" id="panel-models">
+    <h2 class="panel-title">Model comparison</h2>
+    <table class="ledger-table" id="models-table">
+      <thead>
+        <tr><th>Model</th><th>Accuracy</th><th>ROC AUC</th><th>5-fold CV AUC</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Feature importance <select id="fi-model-select"></select></h3>
+        <canvas id="chart-feature-importance"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>ROC curves</h3>
+        <canvas id="chart-roc"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMOGRAPHICS -->
+  <section class="panel" id="panel-demographics">
+    <h2 class="panel-title">Demographics</h2>
+    <div class="chart-row three-up">
+      <div class="chart-card"><h3>Age distribution</h3><canvas id="chart-age"></canvas></div>
+      <div class="chart-card"><h3>Income category</h3><canvas id="chart-income"></canvas></div>
+      <div class="chart-card"><h3>Card category</h3><canvas id="chart-card"></canvas></div>
+    </div>
+  </section>
+
+  <!-- BEHAVIOR -->
+  <section class="panel" id="panel-behavior">
+    <h2 class="panel-title">Transaction behavior</h2>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Transaction count vs. amount</h3>
+        <canvas id="chart-scatter"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Months inactive (12mo)</h3>
+        <canvas id="chart-inactivity"></canvas>
+      </div>
+    </div>
+    <table class="ledger-table" id="behavior-table">
+      <thead><tr><th>Metric</th><th>Attrited mean</th><th>Existing mean</th><th>Attrited median</th><th>Existing median</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- SEGMENTS -->
+  <section class="panel" id="panel-segments">
+    <h2 class="panel-title">Churn rate by segment</h2>
+    <div class="chart-row three-up">
+      <div class="chart-card"><h3>By income</h3><canvas id="chart-seg-income"></canvas></div>
+      <div class="chart-card"><h3>By card tier</h3><canvas id="chart-seg-card"></canvas></div>
+      <div class="chart-card"><h3>By education</h3><canvas id="chart-seg-edu"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ASSESS -->
+  <section class="panel" id="panel-assess">
+    <h2 class="panel-title">Assess a customer</h2>
+    <form id="assess-form" class="assess-form">
+      <div class="form-grid">
+        <label>Age <input type="number" name="Customer_Age" value="45" required></label>
+        <label>Gender
+          <select name="Gender"><option value="M">M</option><option value="F">F</option></select>
+        </label>
+        <label>Dependents <input type="number" name="Dependent_count" value="2" required></label>
+        <label>Education
+          <select name="Education_Level">
+            <option>High School</option><option selected>Graduate</option><option>Uneducated</option>
+            <option>Unknown</option><option>College</option><option>Post-Graduate</option><option>Doctorate</option>
+          </select>
+        </label>
+        <label>Marital status
+          <select name="Marital_Status"><option selected>Married</option><option>Single</option><option>Divorced</option><option>Unknown</option></select>
+        </label>
+        <label>Income category
+          <select name="Income_Category">
+            <option>Less than $40K</option><option>$40K - $60K</option>
+            <option selected>$60K - $80K</option><option>$80K - $120K</option>
+            <option>$120K +</option><option>Unknown</option>
+          </select>
+        </label>
+        <label>Card category
+          <select name="Card_Category"><option selected>Blue</option><option>Silver</option><option>Gold</option><option>Platinum</option></select>
+        </label>
+        <label>Months on book <input type="number" name="Months_on_book" value="36" required></label>
+        <label>Relationship count <input type="number" name="Total_Relationship_Count" value="3" required></label>
+        <label>Months inactive (12mo) <input type="number" name="Months_Inactive_12_mon" value="2" required></label>
+        <label>Contacts (12mo) <input type="number" name="Contacts_Count_12_mon" value="2" required></label>
+        <label>Credit limit <input type="number" step="0.01" name="Credit_Limit" value="8500" required></label>
+        <label>Total revolving balance <input type="number" step="0.01" name="Total_Revolving_Bal" value="1100" required></label>
+        <label>Avg open to buy <input type="number" step="0.01" name="Avg_Open_To_Buy" value="7400" required></label>
+        <label>Amt change Q4/Q1 <input type="number" step="0.01" name="Total_Amt_Chng_Q4_Q1" value="0.75" required></label>
+        <label>Total trans amount <input type="number" step="0.01" name="Total_Trans_Amt" value="4200" required></label>
+        <label>Total trans count <input type="number" name="Total_Trans_Ct" value="65" required></label>
+        <label>Count change Q4/Q1 <input type="number" step="0.01" name="Total_Ct_Chng_Q4_Q1" value="0.7" required></label>
+        <label>Avg utilization ratio <input type="number" step="0.01" min="0" max="1" name="Avg_Utilization_Ratio" value="0.13" required></label>
+      </div>
+      <button type="submit" class="submit-btn">Run assessment</button>
+    </form>
+
+    <div id="assess-result" class="assess-result hidden">
+      <div class="risk-stamp" id="risk-stamp">
+        <span id="risk-label">—</span>
+      </div>
+      <div class="assess-numbers">
+        <div><span id="predict-label">—</span><label>predicted status</label></div>
+        <div><span id="churn-prob">—</span><label>churn probability</label></div>
+        <div><span id="retain-prob">—</span><label>retain probability</label></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Ledger — trained on the BankChurners credit-card customer dataset. Not for production credit decisions.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
