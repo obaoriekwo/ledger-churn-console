@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Flask
+instance/
+.flaskenv
+
+# OS / editor cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Render / local env
+.env

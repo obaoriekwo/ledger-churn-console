@@ -1,0 +1,41 @@
+HOW TO RUN THIS APP (Windows)
+==============================
+
+1. Unzip this whole folder somewhere you can find it, e.g. Desktop.
+   (Don't run it from inside the .zip - always extract first.)
+
+2. Double-click "start.bat" inside the folder.
+
+That's it. A black window will open, install what's needed, train the
+models (~20-30 seconds), and a browser tab will open on its own once the
+server actually responds - it polls for readiness rather than guessing a
+fixed wait time, so it works the same whether your machine is fast or slow.
+If for any reason it doesn't open automatically, just go to
+http://127.0.0.1:5000/ yourself once the black window says "Running on
+http://127.0.0.1:5000".
+
+If double-clicking gives a security warning ("Windows protected your PC"):
+   Click "More info" -> "Run anyway". This is normal for unsigned .bat
+   files you download yourself - it isn't a virus warning about the app.
+
+TO STOP THE APP:
+   Just close the black terminal window (or press CTRL+C inside it).
+
+TO RUN IT AGAIN LATER:
+   Double-click start.bat again. It will skip re-installing anything
+   already installed, so it will be much faster the second time.
+
+IF SOMETHING GOES WRONG:
+   The black window will show a red [ERROR] message explaining what
+   failed (usually "Python not found" - install it from
+   https://www.python.org/downloads/ and tick "Add python.exe to PATH"
+   during setup). Take a screenshot of the black window and send it back -
+   that error text is exactly what's needed to fix it, no need to
+   re-download or re-explain the project each time.
+
+WHY THIS KEEPS BREAKING FOR OTHER PROJECTS:
+   Most Python/Flask projects don't ship a launcher like this one - you're
+   expected to know to open a terminal, cd into the right folder, and run
+   two commands by hand. This start.bat does exactly those steps for you.
+   Ask Claude to add a start.bat (Windows) or start.sh (Mac/Linux) like
+   this one to any future project, and it'll be just as simple.
